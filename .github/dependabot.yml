@@ -1,0 +1,43 @@
+# Policy: always follow the latest (including majors).
+# GitHub Actions are out of scope because github-toolkit is referenced at @main.
+# The skills in .claude/skills/ are also out of Dependabot's scope; the update-skills workflow plays the same role.
+#  - minor / patch: one PR per ecosystem (less noise)
+#  - major: individual PRs (deliberately not grouped, so breaking changes are reviewed one at a time)
+#  - @yamat47/playmaker: every bump in its own PR, so the demo follows each library release visibly
+version: 2
+
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+    # Also raise the range specified in package.json itself to the latest (not just follow the lockfile)
+    versioning-strategy: increase
+    # Wait 7 days after publication before bumping. pnpm 11 does not install versions published less than
+    # a day ago (minimumReleaseAge), so a PR arriving before that fails install. 7 days is the length zizmor
+    # requires (dependabot-cooldown) to avoid the period right after publication, when withdrawals and
+    # replacements are common. The library itself is excluded, so the demo picks up a release the next week
+    cooldown:
+      default-days: 7
+      exclude:
+        - "@yamat47/playmaker"
+    commit-message:
+      prefix: chore(deps)
+      prefix-development: chore(deps-dev)
+    groups:
+      dev-dependencies:
+        dependency-type: development
+        update-types:
+          - minor
+          - patch
+
+  # Base of the development image (node:<major>-<debian>-slim)
+  - package-ecosystem: docker
+    directory: /docker
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+    commit-message:
+      prefix: chore(deps-dev)
