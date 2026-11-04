@@ -277,7 +277,8 @@ body {
 }
 @media (max-width: 900px), (pointer: coarse) {
   .body,
-  .footer {
+  .footer,
+  .topbar__actions {
     display: none;
   }
   .mobile-notice {
