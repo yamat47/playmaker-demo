@@ -1,0 +1,9 @@
+# pnpm 11 ignores build scripts by default and fails install when any are unapproved.
+# Explicitly allow the script for the native esbuild binary that vite depends on.
+allowBuilds:
+  esbuild: true
+
+# The author publishes @yamat47/playmaker, so its releases are not held back for a day
+# (minimumReleaseAge); Dependabot bumps it on release day.
+minimumReleaseAgeExclude:
+  - "@yamat47/playmaker"

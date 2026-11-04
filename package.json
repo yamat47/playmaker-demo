@@ -1,0 +1,30 @@
+{
+  "name": "playmaker-demo",
+  "private": true,
+  "description": "Demo site for @yamat47/playmaker, an American football play diagram editor",
+  "homepage": "https://playmaker-demo.yamat47.me/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yamat47/playmaker-demo.git"
+  },
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check --error-on-warnings .",
+    "lint:fix": "biome check --write .",
+    "check": "pnpm run typecheck && pnpm run lint && pnpm run build"
+  },
+  "dependencies": {
+    "@yamat47/playmaker": "^0.2.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.6.3",
+    "typescript": "~7.0.2",
+    "vite": "^8.3.5"
+  },
+  "packageManager": "pnpm@11.8.0"
+}

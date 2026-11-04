@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Playmaker Demo: an American football play diagram editor</title>
+    <meta
+      name="description"
+      content="Draw American football plays in the browser: place players, draw routes, blocks, and motion, and export a PNG. A demo of the Playmaker library."
+    />
+    <meta name="author" content="yamat47" />
+    <meta property="og:url" content="https://playmaker-demo.yamat47.me/" />
+    <meta property="og:title" content="Playmaker Demo: an American football play diagram editor" />
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:description"
+      content="Draw American football plays in the browser: place players, draw routes, blocks, and motion, and export a PNG."
+    />
+    <meta property="og:image" content="https://playmaker-demo.yamat47.me/og-image.png" />
+    <meta property="og:site_name" content="Playmaker Demo" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@yamat47" />
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Saira+Condensed:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="app">
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand__name">Playmaker</span>
+          <span class="brand__tag" data-i18n="tagline">Play diagram editor</span>
+        </div>
+        <div class="topbar__spacer"></div>
+        <div class="topbar__actions">
+          <button id="mode-toggle" class="btn" type="button"></button>
+          <button id="export-png" class="btn" type="button" data-i18n="exportPng">Export PNG</button>
+          <button id="clear" class="btn" type="button" data-i18n="clear">Clear</button>
+          <button id="lang-toggle" class="btn" type="button"></button>
+          <a
+            class="btn"
+            href="https://github.com/yamat47/playmaker"
+            target="_blank"
+            rel="noopener"
+            >GitHub</a
+          >
+        </div>
+      </header>
+
+      <div class="body">
+        <aside class="library">
+          <div id="library-scroll" class="library__scroll"></div>
+          <div class="playinfo">
+            <div class="playinfo__eyebrow" data-i18n="nowShowing">Now showing</div>
+            <div id="playinfo-name" class="playinfo__name"></div>
+            <div class="playinfo__meta">
+              <span id="playinfo-chip" class="playinfo__chip" hidden></span>
+              <span id="playinfo-pers" class="playinfo__pers"></span>
+            </div>
+            <p id="playinfo-summary" class="playinfo__summary"></p>
+          </div>
+        </aside>
+
+        <main class="stage-wrap">
+          <div id="stage"></div>
+          <p id="status" class="status" aria-live="polite"></p>
+        </main>
+      </div>
+
+      <footer class="footer">
+        <span data-i18n="builtWith">Built with</span>
+        <a href="https://www.npmjs.com/package/@yamat47/playmaker" target="_blank" rel="noopener"
+          >@yamat47/playmaker</a
+        >
+        <span id="library-version"></span>
+        <span class="footer__sep" aria-hidden="true">·</span>
+        <a href="https://github.com/yamat47/playmaker-demo" target="_blank" rel="noopener"
+          data-i18n="siteSource"
+          >Source of this page</a
+        >
+        <span class="footer__sep" aria-hidden="true">·</span>
+        <span>MIT</span>
+      </footer>
+
+      <div class="mobile-notice" role="note">
+        <p data-i18n="mobileNotice">
+          This editor is built for a desktop browser with a mouse. Open it on a PC to try it.
+        </p>
+      </div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
