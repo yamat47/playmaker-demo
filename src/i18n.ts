@@ -36,7 +36,7 @@ const PAGE = {
   },
   yourDiagram: { en: "Your diagram", ja: "あなたの図" },
   yourDiagramSummary: {
-    en: "Restored from this browser. Pick a play on the left to start from a preset.",
+    en: "Saved in this browser. Pick a play on the left to start from a preset.",
     ja: "このブラウザに保存した図です。左の一覧から選ぶとプリセットから始められます。",
   },
   blank: { en: "Blank field", ja: "白紙" },

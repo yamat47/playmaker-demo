@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@yamat47/playmaker':
-        specifier: ^0.2.0
-        version: 0.2.0
+        specifier: ^0.3.0
+        version: 0.3.0
     devDependencies:
       '@biomejs/biome':
         specifier: ^2.6.3
@@ -315,8 +315,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@yamat47/playmaker@0.2.0':
-    resolution: {integrity: sha512-WIHM/Amcx0X5XZqzclmELVIFJnVmZOdnIwqapjzRl3RWx1KLupgByk5P3l9RYIx7j93Dqv+CawHxxrSwIhS3Rw==}
+  '@yamat47/playmaker@0.3.0':
+    resolution: {integrity: sha512-mOta0YEvWH2wtM5gqd3u1R0DC1bjpTpxp/ix++AdmC6k8XsiH39VUz0NClJ/g5hHTeb35SwsPzmhPC1N/PZhHg==}
 
   detect-libc@2.1.2:
     resolution: {integrity: sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ==}
@@ -641,7 +641,7 @@ snapshots:
   '@typescript/typescript-win32-x64@7.0.2':
     optional: true
 
-  '@yamat47/playmaker@0.2.0': {}
+  '@yamat47/playmaker@0.3.0': {}
 
   detect-libc@2.1.2: {}
 
