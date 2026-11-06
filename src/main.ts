@@ -46,14 +46,39 @@ let lang = initialLang();
 let mode: PlaymakerMode = loadMode() ?? "edit";
 
 /** What the "Now showing" card describes: a rail item, the visitor's own diagram, or a blank field. */
-type Shown = { kind: "item"; item: RailItem } | { kind: "own" } | { kind: "blank" };
+type Shown = { kind: "item"; id: string } | { kind: "own" } | { kind: "blank" };
 let shown: Shown = { kind: "blank" };
 let activeButton: HTMLButtonElement | null = null;
 
 const sections = () => railSections(lang);
 
+function itemById(id: string): RailItem {
+  const { showcase, formations, plays } = sections();
+  const item = [...showcase, ...formations, ...plays].find((candidate) => candidate.id === id);
+  if (item === undefined) {
+    throw new Error(`no rail item ${id}`);
+  }
+  return item;
+}
+
+function show(next: Shown): void {
+  shown = next;
+  renderShown();
+}
+
 function onChange(data: PlayData): void {
-  saveDiagram(data);
+  // An empty field is not kept, so a reload after Clear opens the first showcase play, as on a
+  // first visit. A line needs its start player, so no players means an empty field.
+  const empty = data.players.length === 0;
+  if (empty) {
+    forgetDiagram();
+  } else {
+    saveDiagram(data);
+  }
+  // onChange does not tell an Undo from an edit, so the card cannot know which pick an Undo
+  // returned to. Any change makes the diagram the visitor's own; a pick or Clear names it again
+  // right after.
+  show(empty ? { kind: "blank" } : { kind: "own" });
 }
 
 // The library fixes the locale at construction, so switching the language rebuilds the editor
@@ -79,7 +104,7 @@ function renderInfo(): void {
   infoChip.hidden = true;
   switch (shown.kind) {
     case "item": {
-      const { item } = shown;
+      const item = itemById(shown.id);
       infoName.textContent = item.name;
       infoChip.hidden = false;
       infoChip.textContent = item.tag;
@@ -114,7 +139,7 @@ function presetButton(item: RailItem): HTMLButtonElement {
   nameEl.className = "preset__name";
   nameEl.textContent = item.name;
   button.append(tagEl, nameEl);
-  button.addEventListener("click", () => select(item, button));
+  button.addEventListener("click", () => select(item));
   return button;
 }
 
@@ -125,20 +150,29 @@ function heading(className: string, text: string): HTMLElement {
   return el;
 }
 
-function select(item: RailItem, button: HTMLButtonElement): void {
-  if (item.load.kind === "formation") {
-    if (!playmaker.loadFormation(item.load.formation)) {
+// A play from the rail replaces the diagram as an edit rather than opening it as a new one, so a
+// visitor who picks one by mistake gets their own diagram back with Undo.
+function select(item: RailItem): void {
+  const { load } = item;
+  if (load.kind === "formation") {
+    if (!playmaker.loadFormation(load.formation)) {
       statusEl.textContent = t(lang, "formationTooMany", { name: item.name });
       return;
     }
-    shown = { kind: "item", item };
   } else {
-    playmaker.setPlayData(item.load.data);
-    saveDiagram(playmaker.getPlayData());
-    shown = { kind: "item", item };
+    playmaker.replacePlayData(load.data);
   }
   statusEl.textContent = "";
-  setActive(button);
+  show({ kind: "item", id: item.id });
+}
+
+/** Points the card and the rail highlight at what is showing. */
+function renderShown(): void {
+  setActive(
+    shown.kind === "item"
+      ? railScroll.querySelector<HTMLButtonElement>(`[data-preset-id="${shown.id}"]`)
+      : null,
+  );
   renderInfo();
 }
 
@@ -153,13 +187,6 @@ function renderRail(): void {
   appendSide(formations);
   railScroll.append(heading("group__title", t(lang, "plays")));
   appendSide(plays);
-  // Keep the highlight on the item that is showing, if it is still in the rail.
-  if (shown.kind === "item") {
-    const id = shown.item.id;
-    setActive(railScroll.querySelector<HTMLButtonElement>(`[data-preset-id="${id}"]`));
-  } else {
-    setActive(null);
-  }
 }
 
 function appendSide(items: readonly RailItem[]): void {
@@ -190,17 +217,9 @@ function setLang(next: Lang): void {
   const data = playmaker.getPlayData();
   playmaker.dispose();
   playmaker = createEditor(data);
-  if (shown.kind === "item") {
-    const id = shown.item.id;
-    const all = sections();
-    const refreshed = [...all.showcase, ...all.formations, ...all.plays].find(
-      (item) => item.id === id,
-    );
-    shown = refreshed === undefined ? shown : { kind: "item", item: refreshed };
-  }
   renderChrome();
   renderRail();
-  renderInfo();
+  renderShown();
 }
 
 modeButton.addEventListener("click", () => {
@@ -213,17 +232,14 @@ modeButton.addEventListener("click", () => {
 langButton.addEventListener("click", () => setLang(lang === "en" ? "ja" : "en"));
 
 need("clear", HTMLButtonElement).addEventListener("click", () => {
-  playmaker.setPlayData({
+  playmaker.replacePlayData({
     version: 2,
     field: { zone: playmaker.fieldZone },
     players: [],
     lines: [],
   });
-  forgetDiagram();
-  shown = { kind: "blank" };
   statusEl.textContent = "";
-  setActive(null);
-  renderInfo();
+  show({ kind: "blank" });
 });
 
 async function downloadPng(): Promise<void> {
@@ -251,7 +267,7 @@ shown =
     ? { kind: "own" }
     : firstShowcase === undefined
       ? { kind: "blank" }
-      : { kind: "item", item: firstShowcase };
+      : { kind: "item", id: firstShowcase.id };
 renderChrome();
 renderRail();
-renderInfo();
+renderShown();
